@@ -24,6 +24,14 @@
 #include <stddef.h>
 #include <stdint.h>
 
+/**
+ * @brief Check if a string of given length only contains ASCII characters.
+ *
+ * @param string A char pointer to the start of the string.
+ * @param length The length of the string. This funtion does not check for 
+ *               terminating NULL bytes.
+ * @returns 1 if the string is ASCII-only
+ */
 static int
 string_is_ascii(const char * string, size_t length) {
     size_t n = length;

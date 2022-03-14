@@ -27,10 +27,18 @@
 
 static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 
+/**
+ * @brief Check if a string of given length only contains ASCII characters.
+ *
+ * @param string A char pointer to the start of the string.
+ * @param length The length of the string. This funtion does not check for 
+ *               terminating NULL bytes.
+ * @returns 1 if the string is ASCII-only
+ */
 static int
-string_is_ascii(char * string, size_t length) {
+string_is_ascii(const char * string, size_t length) {
     size_t n = length;
-    char * char_ptr = string;
+    const char * char_ptr = string;
     typedef __m128i longword;
 
     // This loads unaligned memory and aligns it
@@ -47,7 +55,7 @@ string_is_ascii(char * string, size_t length) {
         char_ptr += 1;
         n -= 1;
     }
-    longword *longword_ptr = (longword *)char_ptr;
+    const longword * longword_ptr = (longword *)char_ptr;
     while (n >= sizeof(longword)) {
         if (!_mm_test_all_zeros(*longword_ptr, longword_ascii_mask)){
             return 0;

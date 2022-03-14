@@ -62,7 +62,7 @@ int main() {
         buffer[i] = 0xff; // definitely not ASCII
         TEST(string_is_ascii(buffer, i), 
              "string_is_ascii incorrectly evaluated one extra character "
-             "At length: %ld\n", i)
+             "At length: %zd\n", i)
         i += 1;
     }
     i = 0;
@@ -71,7 +71,7 @@ int main() {
         buffer[i] = 0xff; // definitely not ASCII
         TEST(!string_is_ascii(buffer, i + 1), 
              "string_is_ascii did not evaluate the last character "
-             "at length: %ld\n", i)
+             "at length: %zd\n", i)
         i += 1;
     }
 

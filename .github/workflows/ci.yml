@@ -37,6 +37,6 @@ jobs:
       - name: compile test suite
         run: >-
           cl ${{matrix.compile_args}} 
-          test_ascii_check.c /F test_ascii_check
+          test_ascii_check.c
       - name: run tests
-        run: ./test_ascii_check
+        run: test_ascii_check

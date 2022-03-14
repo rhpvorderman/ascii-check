@@ -25,9 +25,9 @@
 #include <stdint.h>
 
 static int
-string_is_ascii(char * string, size_t length) {
+string_is_ascii(const char * string, size_t length) {
     size_t n = length;
-    char * char_ptr = string;
+    const char * char_ptr = string;
     // The first loop aligns the memory address. Char_ptr is cast to a size_t
     // to return the memory address. Uint64_t is 8 bytes long, and the processor
     // handles this better when its address is a multiplier of 8. This loops
@@ -39,7 +39,7 @@ string_is_ascii(char * string, size_t length) {
         char_ptr += 1;
         n -= 1;
     }
-    uint64_t *longword_ptr = (uint64_t *)char_ptr;
+    const uint64_t *longword_ptr = (uint64_t *)char_ptr;
     while (n >= sizeof(uint64_t)) {
         if (*longword_ptr & ASCII_MASK_8BYTE){
             return 0;

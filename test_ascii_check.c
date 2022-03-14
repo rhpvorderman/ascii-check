@@ -20,15 +20,53 @@
 
 #include "ascii_check.h"
 #include <stdio.h>
+#include <string.h>
 
-static const char ASCII_STRING[] = "In het Nederlands komen bijzondere "
-                                   "leestekens niet vaak voor.";
+#define ASCII_STRING "In het Nederlands komen bijzondere leestekens niet vaak voor."
 
-static const char NON_ASCII_STRING[] = "In sp\xe4terer Zeit trat Umlaut sehr "
-                                       "h\xe4ufig analogisch ein.";
+#define NON_ASCII_STRING "In sp\xe4terer Zeit trat Umlaut sehr h\xe4ufig analogisch ein."
+
+#define TEST(check, fail_message) \
+if (!(check)) {\
+    printf(fail_message); \
+    failed += 1; \
+} else { \
+    successfull += 1; \
+}
 
 int main() {
-    printf("%s\n", ASCII_STRING);
-    printf("%s\n", NON_ASCII_STRING);
-    return 0;
+    size_t ascii_len = strlen(ASCII_STRING);
+    size_t non_ascii_len = strlen(NON_ASCII_STRING);
+
+    int successfull = 0;
+    int failed = 0; 
+    TEST(string_is_ascii(ASCII_STRING, ascii_len), 
+         "string_is_ascii returned 0 with ASCII-only string.\n")
+    TEST(!string_is_ascii(NON_ASCII_STRING, non_ascii_len), 
+         "string_is_ascii returned 0 with ASCII-only string.\n")
+    
+    size_t i = 0;
+    char buffer[128]; 
+    // Series of check to make sure string_is_ascii does not check characters
+    // after the string.
+    while (i < (ascii_len)) {
+        memcpy(buffer, ASCII_STRING, i);
+        buffer[i] = 0xff; // definitely not ASCII
+        TEST(string_is_ascii(buffer, i), 
+             "string_is_ascii incorrectly evaluated one extra character.\n")
+        i += 1;
+    }
+    i = 0;
+    while (i < (ascii_len)) {
+        memcpy(buffer, ASCII_STRING, i);
+        buffer[i] = 0xff; // definitely not ASCII
+        TEST(!string_is_ascii(buffer, i + 1), 
+             "string_is_ascii did not evaluate the last character.\n")
+        i += 1;
+    }
+    if (failed) {
+        return 1;
+    } else {
+        return 0;
+    }
 }

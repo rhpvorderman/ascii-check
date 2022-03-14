@@ -57,7 +57,8 @@ string_is_ascii(const char * string, size_t length) {
     }
     const longword * longword_ptr = (longword *)char_ptr;
     while (n >= sizeof(longword)) {
-        if (!_mm_test_all_zeros(*longword_ptr, longword_ascii_mask)){
+        // testz returns 1 when a & b == 0. 
+        if (!_mm_testz_si128(*longword_ptr, longword_ascii_mask)){
             return 0;
         }
         longword_ptr += 1;

@@ -18,11 +18,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#define ASCII_MASK_8BYTE 0x8080808080808080ULL
-#define ASCII_MASK_1BYTE 0x80
-
 #include <stddef.h>
 #include <stdint.h>
+
+#define ASCII_MASK_8BYTE 0x8080808080808080ULL
+#define ASCII_MASK_1BYTE 0x80
 
 /**
  * @brief Check if a string of given length only contains ASCII characters.

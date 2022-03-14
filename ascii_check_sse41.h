@@ -18,12 +18,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#define ASCII_MASK_8BYTE 0x8080808080808080ULL
-#define ASCII_MASK_1BYTE 0x80
-
 #include <stddef.h>
 #include <stdint.h>
 #include <smmintrin.h>
+
+#define ASCII_MASK_8BYTE 0x8080808080808080ULL
+#define ASCII_MASK_1BYTE 0x80
 
 static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 

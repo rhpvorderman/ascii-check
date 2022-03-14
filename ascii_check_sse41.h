@@ -23,17 +23,18 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <stdalign.h>
 #include <immintrin.h>
 
-alignas(128) static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
+static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 
 static int
 string_is_ascii(char * string, size_t length) {
     size_t n = length;
     char * char_ptr = string;
     typedef __m128i longword;
-    longword *longword_ascii_mask = (longword *)ascii_mask_16_byte;
+
+    // This loads unaligned memory and aligns it
+    longword longword_ascii_mask = _mm_loadu_si128((const longword *)ascii_mask_16_byte);
 
     // The first loop aligns the memory address. Char_ptr is cast to a size_t
     // to return the memory address. longword is 8 bytes long, and the processor
@@ -48,7 +49,7 @@ string_is_ascii(char * string, size_t length) {
     }
     longword *longword_ptr = (longword *)char_ptr;
     while (n >= sizeof(longword)) {
-        if (!_mm_testz_si128(*longword_ptr, *longword_ascii_mask)){
+        if (!_mm_test_all_zeros(*longword_ptr, longword_ascii_mask)){
             return 0;
         }
         longword_ptr += 1;

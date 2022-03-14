@@ -18,7 +18,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#if ASCII_CHECK_SSE41
+#include "ascii_check_sse41.h"
+#define TEST_MESSAGE "Testing ascii_check_sse41.h\n"
+#else
 #include "ascii_check.h"
+#define TEST_MESSAGE "Testing ascii_check.h\n"
+#endif
 #include <stdio.h>
 #include <string.h>
 
@@ -35,6 +41,8 @@ if (!(check)) {\
 }
 
 int main() {
+    printf(TEST_MESSAGE);
+    
     size_t ascii_len = strlen(ASCII_STRING);
     size_t non_ascii_len = strlen(NON_ASCII_STRING);
 
@@ -54,7 +62,7 @@ int main() {
         buffer[i] = 0xff; // definitely not ASCII
         TEST(string_is_ascii(buffer, i), 
              "string_is_ascii incorrectly evaluated one extra character "
-             "At length: %d\n", i)
+             "At length: %ld\n", i)
         i += 1;
     }
     i = 0;
@@ -63,7 +71,7 @@ int main() {
         buffer[i] = 0xff; // definitely not ASCII
         TEST(!string_is_ascii(buffer, i + 1), 
              "string_is_ascii did not evaluate the last character "
-             "at length: %d\n", i)
+             "at length: %ld\n", i)
         i += 1;
     }
 

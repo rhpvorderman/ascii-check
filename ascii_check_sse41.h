@@ -24,7 +24,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdalign.h>
-#include <x86intrin.h>
+#include <immintrin.h>
 
 static const alignas(128) uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 

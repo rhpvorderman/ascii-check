@@ -23,7 +23,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <immintrin.h>
+#include <smmintrin.h>
 
 static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 

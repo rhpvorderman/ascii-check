@@ -1,0 +1,15 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        header_file:
+          - "ascii_check.h"
+          - "ascii_check_sse41.h"
+        steps:
+          - uses: actions/checkout@v2
+          - name:

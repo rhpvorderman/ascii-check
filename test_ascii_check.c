@@ -64,6 +64,22 @@ int main() {
              "string_is_ascii did not evaluate the last character.\n")
         i += 1;
     }
+
+    // Basic sanity checks
+    i = 0;
+    char c;
+    while (i < 128) {
+        c = (char)i;
+        TEST(string_is_ascii(&c, 1), "string_is_ascii failed on ASCII char.\n")
+        i += 1;
+    }
+    while (i < 256) {
+        c = (char)i;
+        TEST(!string_is_ascii(&c, 1), "string_is_ascii succeeded on non-ASCII char.\n")
+        i += 1; 
+    }
+    
+
     if (failed) {
         return 1;
     } else {

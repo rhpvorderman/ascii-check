@@ -32,6 +32,8 @@ jobs:
           - "/D ASCII_CHECK_SSE41"
     steps:
       - uses: actions/checkout@v2
+      - name: Set MSVC developer prompt
+        uses: ilammy/msvc-dev-cmd@v1.6.0
       - name: compile test suite
         run: >-
           cl ${{matrix.compile_args}} 

@@ -7,9 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        header_file:
-          - "ascii_check.h"
-          - "ascii_check_sse41.h"
+        compile_args:
+           - ""
+           - "-D ASCII_CHECK_SSE41 -msse4.1"
         steps:
           - uses: actions/checkout@v2
-          - name:
+          - name: compile test suite
+            run: gcc ${{matrix.compile_args}} test_ascii_check.c -o test_ascii_check
+          - name: run tests
+            run: ./test_ascii_check

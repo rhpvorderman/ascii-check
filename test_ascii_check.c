@@ -26,19 +26,19 @@
 
 #define NON_ASCII_STRING "In sp\xe4terer Zeit trat Umlaut sehr h\xe4ufig analogisch ein."
 
-#define TEST(check, fail_message) \
+#define TEST(check, ...) \
 if (!(check)) {\
-    printf(fail_message); \
+    printf(__VA_ARGS__); \
     failed += 1; \
 } else { \
-    successfull += 1; \
+    succeeded += 1; \
 }
 
 int main() {
     size_t ascii_len = strlen(ASCII_STRING);
     size_t non_ascii_len = strlen(NON_ASCII_STRING);
 
-    int successfull = 0;
+    int succeeded = 0;
     int failed = 0; 
     TEST(string_is_ascii(ASCII_STRING, ascii_len), 
          "string_is_ascii returned 0 with ASCII-only string.\n")
@@ -53,7 +53,8 @@ int main() {
         memcpy(buffer, ASCII_STRING, i);
         buffer[i] = 0xff; // definitely not ASCII
         TEST(string_is_ascii(buffer, i), 
-             "string_is_ascii incorrectly evaluated one extra character.\n")
+             "string_is_ascii incorrectly evaluated one extra character "
+             "At length: %d\n", i)
         i += 1;
     }
     i = 0;
@@ -61,7 +62,8 @@ int main() {
         memcpy(buffer, ASCII_STRING, i);
         buffer[i] = 0xff; // definitely not ASCII
         TEST(!string_is_ascii(buffer, i + 1), 
-             "string_is_ascii did not evaluate the last character.\n")
+             "string_is_ascii did not evaluate the last character "
+             "at length: %d\n", i)
         i += 1;
     }
 
@@ -70,15 +72,19 @@ int main() {
     char c;
     while (i < 128) {
         c = (char)i;
-        TEST(string_is_ascii(&c, 1), "string_is_ascii failed on ASCII char.\n")
+        TEST(string_is_ascii(&c, 1), "string_is_ascii failed " 
+                                     "on ASCII char value: %d.\n", c)
         i += 1;
     }
     while (i < 256) {
         c = (char)i;
-        TEST(!string_is_ascii(&c, 1), "string_is_ascii succeeded on non-ASCII char.\n")
+        TEST(!string_is_ascii(&c, 1), "string_is_ascii succeeded "
+                                      "on non-ASCII char value: %d.\n", c)
         i += 1; 
     }
     
+    printf("succeeded: %d\n", succeeded);
+    printf("failed: %d\n", failed);
 
     if (failed) {
         return 1;

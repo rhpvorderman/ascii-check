@@ -26,7 +26,7 @@
 #include <stdalign.h>
 #include <immintrin.h>
 
-static const alignas(128) uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
+alignas(128) static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 
 static int
 string_is_ascii(char * string, size_t length) {

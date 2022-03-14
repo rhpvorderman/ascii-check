@@ -3,10 +3,13 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  test:
+  test-unix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
         compile_args:
            - ""
            - "-D ASCII_CHECK_SSE41 -msse4.1"
@@ -14,7 +17,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: compile test suite
         run: >- 
-          gcc -Wall -Werror 
+          cc -Wall -Werror 
           ${{matrix.compile_args}} 
           test_ascii_check.c -o test_ascii_check
       - name: run tests

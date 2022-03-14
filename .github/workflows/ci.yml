@@ -22,3 +22,19 @@ jobs:
           test_ascii_check.c -o test_ascii_check
       - name: run tests
         run: ./test_ascii_check
+
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        compile_args:
+          - ""
+          - "/D ASCII_CHECK_SSE41"
+    steps:
+      - uses: actions/checkout@v2
+      - name: compile test suite
+        run: >-
+          cl ${{matrix.compile_args}} 
+          test_ascii_check.c /F test_ascii_check
+      - name: run tests
+        run: ./test_ascii_check

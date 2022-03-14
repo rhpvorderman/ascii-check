@@ -39,4 +39,4 @@ jobs:
           cl ${{matrix.compile_args}} 
           test_ascii_check.c
       - name: run tests
-        run: test_ascii_check
+        run: .\test_ascii_check

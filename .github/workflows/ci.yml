@@ -12,7 +12,7 @@ jobs:
           - macos-latest
         compile_args:
            - ""
-           - "-D ASCII_CHECK_SSE41 -msse4.1"
+           - "-D ASCII_CHECK_SSE2 -msse2"
     steps:
       - uses: actions/checkout@v2
       - name: compile test suite
@@ -29,7 +29,7 @@ jobs:
       matrix:
         compile_args:
           - ""
-          - "/D ASCII_CHECK_SSE41"
+          - "/D ASCII_CHECK_SSE2"
     steps:
       - uses: actions/checkout@v2
       - name: Set MSVC developer prompt

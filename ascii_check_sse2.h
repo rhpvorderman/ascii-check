@@ -20,12 +20,9 @@
 
 #include <stddef.h>
 #include <stdint.h>
-#include <smmintrin.h>
+#include <emmintrin.h>
 
-#define ASCII_MASK_8BYTE 0x8080808080808080ULL
 #define ASCII_MASK_1BYTE 0x80
-
-static const uint64_t ascii_mask_16_byte[2] = {ASCII_MASK_8BYTE, ASCII_MASK_8BYTE};
 
 /**
  * @brief Check if a string of given length only contains ASCII characters.
@@ -41,9 +38,6 @@ string_is_ascii(const char * string, size_t length) {
     const char * char_ptr = string;
     typedef __m128i longword;
 
-    // This loads unaligned memory and aligns it
-    longword longword_ascii_mask = _mm_loadu_si128((const longword *)ascii_mask_16_byte);
-
     // The first loop aligns the memory address. Char_ptr is cast to a size_t
     // to return the memory address. longword is 8 bytes long, and the processor
     // handles this better when its address is a multiplier of 8. This loops
@@ -57,8 +51,9 @@ string_is_ascii(const char * string, size_t length) {
     }
     const longword * longword_ptr = (longword *)char_ptr;
     while (n >= sizeof(longword)) {
-        // testz returns 1 when a & b == 0. 
-        if (!_mm_testz_si128(*longword_ptr, longword_ascii_mask)){
+        // _mm_movemask_epi8 checks the most significant 8th bit of each char
+        // and returns a 16-bit integer that contains all 16 checked bits.
+        if (_mm_movemask_epi8(*longword_ptr)) {
             return 0;
         }
         longword_ptr += 1;

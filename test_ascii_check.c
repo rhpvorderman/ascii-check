@@ -18,9 +18,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#if ASCII_CHECK_SSE41
-#include "ascii_check_sse41.h"
-#define TEST_MESSAGE "Testing ascii_check_sse41.h\n"
+#if ASCII_CHECK_SSE2
+#include "ascii_check_sse2.h"
+#define TEST_MESSAGE "Testing ascii_check_sse2.h\n"
 #else
 #include "ascii_check.h"
 #define TEST_MESSAGE "Testing ascii_check.h\n"

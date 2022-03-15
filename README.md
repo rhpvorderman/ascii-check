@@ -1,6 +1,18 @@
 # ascii-check
 Header-only C library for ASCII string checking using various optimizations. 
 
+Features:
+
+* Header-only library, simply include the files or code in your project.
+* Permissive MIT license. No barriers to including the files.
+* Fast ASCII checking using 8-byte wide masking
+* Accelerated ASCII checking using SSE2 instructions which are available on 
+  every 64-bit x86 CPU.
+
+This library was made for fast ASCII checks for ASCII-only file formats. It 
+was put here in the hope that others may find it useful or might learn from 
+the implementation.
+
 ## Usage
 
 Simply copy [`ascii_check.h`](ascii_check.h) and/or [`ascii_check_sse2.h`](

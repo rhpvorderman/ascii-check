@@ -18,6 +18,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+// This file is maintained and tested at
+// https://github.com/rhpvorderman/ascii-check
+// Please report bugs and feature requests there.
+
 #include <stddef.h>
 #include <stdint.h>
 #include <emmintrin.h>

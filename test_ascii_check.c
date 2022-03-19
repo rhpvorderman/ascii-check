@@ -21,6 +21,9 @@
 #if ASCII_CHECK_SSE2
 #include "ascii_check_sse2.h"
 #define TEST_MESSAGE "Testing ascii_check_sse2.h\n"
+#elif ASCII_CHECK_SHORT
+#include "ascii_check_short.h"
+#define TEST_MESSAGE "Testing ascii_check_short.h\n"
 #else
 #include "ascii_check.h"
 #define TEST_MESSAGE "Testing ascii_check.h\n"

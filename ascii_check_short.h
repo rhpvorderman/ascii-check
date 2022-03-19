@@ -39,7 +39,7 @@
  * @returns 1 if the string is ASCII-only
  */
 static int
-short_string_is_ascii(const char * string, size_t length) {
+string_is_ascii(const char * string, size_t length) {
     size_t n = length;
     const char * char_ptr = string;
     const uint64_t *longword_ptr = (uint64_t *)char_ptr;

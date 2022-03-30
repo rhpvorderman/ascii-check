@@ -26,6 +26,8 @@
 #include <stdint.h>
 #include <emmintrin.h>
 
+#include <stdio.h>
+
 #define ASCII_MASK_1BYTE 0x80
 
 /**
@@ -63,7 +65,7 @@ string_is_ascii(const char * string, size_t length) {
         n -= 1;
     }
     // Check the most significant bits in the accumulated words and chars.
-    return !(_mm_movemask_epi8(all_words) && (all_chars & ASCII_MASK_1BYTE));
+    return !(_mm_movemask_epi8(all_words) || (all_chars & ASCII_MASK_1BYTE));
 }
 
 

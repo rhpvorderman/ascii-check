@@ -1,7 +1,12 @@
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
-#include <ascii_check.h>
-
+#if ASCII_CHECK_SSE2
+#include "ascii_check_sse2.h"
+#elif ASCII_CHECK_AVX2
+#include "ascii_check_avx2.h"
+#else
+#include "ascii_check.h"
+#endif
 PyDoc_STRVAR(ascii_check_doc,
 "ascii_check($module, data, /)\n"
 "--\n"

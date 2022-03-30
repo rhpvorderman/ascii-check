@@ -13,7 +13,6 @@ jobs:
         compile_args:
            - ""
            - "-D ASCII_CHECK_SSE2 -msse2"
-           - "-D ASCII_CHECK_SHORT"
     steps:
       - uses: actions/checkout@v2
       - name: compile test suite

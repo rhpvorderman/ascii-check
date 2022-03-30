@@ -28,16 +28,19 @@
 #define ASCII_MASK_8BYTE 0x8080808080808080ULL
 #define ASCII_MASK_1BYTE 0x80
 
+
 /**
- * @brief Check if a string of given length only contains ASCII characters.
+ * @brief Return the char * to the first non-ASCII character. Like memchr but
+ * finds all non-ASCII characters.
  *
  * @param string A char pointer to the start of the string.
- * @param length The length of the string. This funtion does not check for 
+ * @param length The length of the string. This funtion does not check for
  *               terminating NULL bytes.
- * @returns 1 if the string is ASCII-only
+ * @returns The char pointer to the first character that is not ASCII or NULL
+ * if such a character was not found.
  */
-static int
-string_is_ascii(const char * string, size_t length) {
+static const char *
+search_non_ascii(const char * string, size_t length) {
     size_t n = length;
     const char * char_ptr = string;
     // The first loop aligns the memory address. Char_ptr is cast to a size_t
@@ -46,7 +49,7 @@ string_is_ascii(const char * string, size_t length) {
     // handles the first few bytes that are not on such a multiplier boundary.
     while ((size_t)char_ptr % sizeof(uint64_t) && n != 0) {
         if (*char_ptr & ASCII_MASK_1BYTE) {
-            return 0;
+            return char_ptr;
         }
         char_ptr += 1;
         n -= 1;
@@ -54,7 +57,9 @@ string_is_ascii(const char * string, size_t length) {
     const uint64_t *longword_ptr = (uint64_t *)char_ptr;
     while (n >= sizeof(uint64_t)) {
         if (*longword_ptr & ASCII_MASK_8BYTE){
-            return 0;
+            // The character is in this longword. Look for the individual
+            // character below.
+            break;
         }
         longword_ptr += 1;
         n -= sizeof(uint64_t);
@@ -62,10 +67,48 @@ string_is_ascii(const char * string, size_t length) {
     char_ptr = (char *)longword_ptr;
     while (n != 0) {
         if (*char_ptr & ASCII_MASK_1BYTE) {
-            return 0;
+            return char_ptr;
         }
         char_ptr += 1;
         n -= 1;
     }
-    return 1;
+    return NULL;
+}
+
+
+/**
+ * @brief Check if a string of given length only contains ASCII characters.
+ *
+ * @param string A char pointer to the start of the string.
+ * @param length The length of the string. This funtion does not check for 
+ *               terminating NULL bytes.
+ * @returns 1 if the string is ASCII-only 0 otherwise
+ */
+static int
+string_is_ascii(const char * string, size_t length) {
+    size_t n = length;
+    // By performing bitwise OR on all characters in 8-byte chunks we can
+    // determine ASCII status in a non-branching (except the loops) fashion.
+    uint64_t all_chars = 0;
+    const char * char_ptr = string;
+
+    // The first loop aligns the memory.
+    while ((size_t)char_ptr % sizeof(uint64_t) && n != 0) {
+        all_chars |= *char_ptr;
+        char_ptr += 1;
+        n -= 1;
+    }
+    const uint64_t *longword_ptr = (uint64_t *)char_ptr;
+    while (n >= sizeof(uint64_t)) {
+        all_chars |= *longword_ptr;
+        longword_ptr += 1;
+        n -= sizeof(uint64_t);
+    }
+    char_ptr = (char *)longword_ptr;
+    while (n != 0) {
+        all_chars |= *char_ptr;
+        char_ptr += 1;
+        n -= 1;
+    }
+    return !(all_chars & ASCII_MASK_8BYTE);
 }

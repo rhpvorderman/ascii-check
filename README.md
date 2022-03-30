@@ -19,7 +19,7 @@ Simply copy [`ascii_check.h`](ascii_check.h) and/or [`ascii_check_sse2.h`](
 ascii_check_sse2.h) into your project and include them, or use a git submodule
 to the same effect.
 
-Both files contain only one function:
+Both files contain two functions:
 
 ```C
 /**
@@ -28,10 +28,24 @@ Both files contain only one function:
  * @param string A char pointer to the start of the string.
  * @param length The length of the string. This funtion does not check for 
  *               terminating NULL bytes.
- * @returns 1 if the string is ASCII-only
+ * @returns 1 if the string is ASCII-only, 0 otherwise.
  */
 static int
 string_is_ascii(const char * string, size_t length)
+
+
+/**
+ * @brief Return the char * to the first non-ASCII character. Like memchr but
+ * finds all non-ASCII characters.
+ *
+ * @param string A char pointer to the start of the string.
+ * @param length The length of the string. This funtion does not check for
+ *               terminating NULL bytes.
+ * @returns The char pointer to the first character that is not ASCII or NULL
+ * if such a character was not found.
+ */
+static const char *
+search_non_ascii(const char * string, size_t length)
 ```
 
 For small strings `ascii_check.h` is recommended. For large chunks of memory

@@ -79,9 +79,9 @@ search_non_ascii(const char * string, size_t length) {
  * @brief Check if a string of given length only contains ASCII characters.
  *
  * @param string A char pointer to the start of the string.
- * @param length The length of the string. This funtion does not check for
+ * @param length The length of the string. This funtion does not check for 
  *               terminating NULL bytes.
- * @returns 1 if the string is ASCII-only
+ * @returns 1 if the string is ASCII-only, 0 otherwise.
  */
 static int
 string_is_ascii(const char * string, size_t length) {

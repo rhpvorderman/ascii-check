@@ -42,7 +42,7 @@ string_is_ascii(const char * string, size_t length) {
     const char * char_ptr = string;
     typedef __m256i longword;
     char all_chars = 0;
-    longword all_words = _mm256_set_epi32(0, 0, 0, 0, 0, 0, 0, 0);
+    longword all_words = _mm256_setzero_si256();
 
     // First align the memory adress
     while ((size_t)char_ptr % sizeof(longword) && n != 0) {

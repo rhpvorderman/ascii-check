@@ -26,8 +26,6 @@
 #include <stdint.h>
 #include <emmintrin.h>
 
-#include <stdio.h>
-
 #define ASCII_MASK_1BYTE 0x80
 
 /**

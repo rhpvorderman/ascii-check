@@ -22,9 +22,31 @@ ascii_check(PyObject *module, PyObject * obj) {
     );
 }
 
+PyDoc_STRVAR(ascii_search_doc,
+"search_non_ascii($module, data, /)\n"
+"--\n"
+"\n"
+"Return the position of the first non-ASCII character. -1 if not found."
+"\n"
+"  data\n"
+"   bytes object\n"
+);
+static PyObject *
+ascii_search_non_ascii(PyObject *module, PyObject * obj) {
+    char * string = PyBytes_AS_STRING(obj);
+    Py_ssize_t size = PyBytes_GET_SIZE(obj);
+    const char * non_ascii = search_non_ascii(string, size);
+    if (non_ascii == NULL) {
+        return PyLong_FromLong(-1);
+    }
+    return PyLong_FromSize_t(non_ascii - string);
+}
+
 static PyMethodDef ascii_methods[] = {
-    {"ascii_check", (PyCFunction)(void(*)(void))ascii_check,
-     METH_O, ascii_check_doc},
+    {"ascii_check", (PyCFunction)(void(*)(void))ascii_check, METH_O, 
+     ascii_check_doc},
+    {"search_non_ascii", (PyCFunction)(void(*)(void))ascii_search_non_ascii,
+     METH_O, ascii_search_doc},
     {NULL}
 };
 

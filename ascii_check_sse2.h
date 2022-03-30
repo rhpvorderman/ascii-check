@@ -34,21 +34,59 @@
  * @param string A char pointer to the start of the string.
  * @param length The length of the string. This funtion does not check for 
  *               terminating NULL bytes.
- * @returns 1 if the string is ASCII-only
+ * @returns 1 if the string is ASCII-only, 0 otherwise.
  */
 static int
 string_is_ascii(const char * string, size_t length) {
     size_t n = length;
     const char * char_ptr = string;
     typedef __m128i longword;
+    char all_chars = 0;
+    longword all_words = _mm_set_epi32(0, 0, 0, 0);
 
-    // The first loop aligns the memory address. Char_ptr is cast to a size_t
-    // to return the memory address. longword is 8 bytes long, and the processor
-    // handles this better when its address is a multiplier of 8. This loops
-    // handles the first few bytes that are not on such a multiplier boundary.
+    // First align the memory adress
+    while ((size_t)char_ptr % sizeof(longword) && n != 0) {
+        all_chars |= *char_ptr;
+        char_ptr += 1;
+        n -= 1;
+    }
+    const longword * longword_ptr = (longword *)char_ptr;
+    while (n >= sizeof(longword)) {
+        all_words = _mm_or_si128(all_words, *longword_ptr);
+        longword_ptr += 1;
+        n -= sizeof(longword);
+    }
+    char_ptr = (char *)longword_ptr;
+    while (n != 0) {
+        all_chars |= *char_ptr;
+        char_ptr += 1;
+        n -= 1;
+    }
+    // Check the most significant bits in the accumulated words and chars.
+    return !(_mm_movemask_epi8(all_words) || (all_chars & ASCII_MASK_1BYTE));
+}
+
+
+/**
+ * @brief Return the char * to the first non-ASCII character. Like memchr but
+ * finds all non-ASCII characters.
+ *
+ * @param string A char pointer to the start of the string.
+ * @param length The length of the string. This funtion does not check for
+ *               terminating NULL bytes.
+ * @returns The char pointer to the first character that is not ASCII or NULL
+ * if such a character was not found.
+ */
+static const char *
+search_non_ascii(const char * string, size_t length) {
+    size_t n = length;
+    const char * char_ptr = string;
+    typedef __m128i longword;
+
+    // The first loop aligns the memory address.
     while ((size_t)char_ptr % sizeof(longword) && n != 0) {
         if (*char_ptr & ASCII_MASK_1BYTE) {
-            return 0;
+            return char_ptr;
         }
         char_ptr += 1;
         n -= 1;
@@ -58,7 +96,8 @@ string_is_ascii(const char * string, size_t length) {
         // _mm_movemask_epi8 checks the most significant 8th bit of each char
         // and returns a 16-bit integer that contains all 16 checked bits.
         if (_mm_movemask_epi8(*longword_ptr)) {
-            return 0;
+            // Character is in longword, find it below.
+            break;
         }
         longword_ptr += 1;
         n -= sizeof(longword);
@@ -66,10 +105,10 @@ string_is_ascii(const char * string, size_t length) {
     char_ptr = (char *)longword_ptr;
     while (n != 0) {
         if (*char_ptr & ASCII_MASK_1BYTE) {
-            return 0;
+            return char_ptr;
         }
         char_ptr += 1;
         n -= 1;
     }
-    return 1;
+    return NULL;
 }

@@ -35,6 +35,10 @@
 
 #define NON_ASCII_STRING "In sp\xe4terer Zeit trat Umlaut sehr h\xe4ufig analogisch ein."
 
+#define NON_ASCII_IN_LONGWORD \
+    "In het Nederlands is het meervoud van ree, ree\xebn." \
+    "Zonder het trema zou er verwarring kunnen ontstaan"
+
 #define TEST(check, ...) \
 if (!(check)) {\
     printf(__VA_ARGS__); \
@@ -48,14 +52,19 @@ int main() {
     
     size_t ascii_len = strlen(ASCII_STRING);
     size_t non_ascii_len = strlen(NON_ASCII_STRING);
+    size_t non_ascii_in_longword_len = strlen(NON_ASCII_IN_LONGWORD);
 
     int succeeded = 0;
     int failed = 0; 
     TEST(string_is_ascii(ASCII_STRING, ascii_len), 
          "string_is_ascii returned 0 with ASCII-only string.\n")
     TEST(!string_is_ascii(NON_ASCII_STRING, non_ascii_len), 
-         "string_is_ascii returned 0 with ASCII-only string.\n")
-    
+         "string_is_ascii returned 1 with NON-ASCII string.\n");
+    TEST(!string_is_ascii(NON_ASCII_IN_LONGWORD, non_ascii_in_longword_len), 
+         "string_is_ascii returned 1 with NON-ASCII string.\n");
+    TEST(*search_non_ascii(NON_ASCII_IN_LONGWORD, 
+                           non_ascii_in_longword_len) == (char)0xeb,
+         "Incorrect position found for non ASCII character");
     size_t i = 0;
     char buffer[128]; 
     // Series of check to make sure string_is_ascii does not check characters
@@ -66,6 +75,8 @@ int main() {
         TEST(string_is_ascii(buffer, i), 
              "string_is_ascii incorrectly evaluated one extra character "
              "At length: %zd\n", i)
+        TEST((search_non_ascii(buffer, i) == NULL),
+              "search_non_ascii incorrectly found a character\n")
         i += 1;
     }
     i = 0;
@@ -75,6 +86,8 @@ int main() {
         TEST(!string_is_ascii(buffer, i + 1), 
              "string_is_ascii did not evaluate the last character "
              "at length: %zd\n", i)
+        TEST((search_non_ascii(buffer, i + 1) == (buffer + i)),
+              "search_non_ascii missed the last character\n")
         i += 1;
     }
 

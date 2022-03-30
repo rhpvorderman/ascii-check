@@ -13,7 +13,10 @@ jobs:
         compile_args:
            - ""
            - "-D ASCII_CHECK_SSE2 -msse2"
-           - "-D ASCII_CHECK_AVX2 -mavx2"
+        include:
+          # The MacOS emulation does not seem to like AVX2
+          - os: ubuntu-latest
+            compile_args: "-D ASCII_CHECK_AVX2 -mavx2"
     steps:
       - uses: actions/checkout@v2
       - name: compile test suite
